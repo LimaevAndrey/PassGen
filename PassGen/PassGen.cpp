@@ -3,9 +3,6 @@
 
 #define MAX_LOADSTRING 100
 
-WCHAR szTitle[MAX_LOADSTRING];
-WCHAR szWindowClass[MAX_LOADSTRING];
-
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI wWinMain(
@@ -15,6 +12,8 @@ int WINAPI wWinMain(
     _In_ int nCmdShow
 )
 {
+    WCHAR szTitle[MAX_LOADSTRING];
+    WCHAR szWindowClass[MAX_LOADSTRING];
     LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadString(hInstance, IDC_PASSGEN, szWindowClass, MAX_LOADSTRING);
 
@@ -24,6 +23,7 @@ int WINAPI wWinMain(
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PASSGEN));
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = MAKEINTRESOURCE(IDI_PASSGEN);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -32,13 +32,22 @@ int WINAPI wWinMain(
         return -1;
     }
 
-    HWND hWnd = CreateWindowEx(
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    int windowWidth = screenWidth * 0.3;
+    int windowHeight = screenHeight * 0.3;
+
+    int windowPosX = screenWidth * 0.5 - windowWidth * 0.5;
+    int windowPosY = screenHeight * 0.5 - windowHeight * 0.5;
+
+    HWND hWnd = CreateWindowExW(
         WS_EX_STATICEDGE,
         szWindowClass,
         szTitle,
         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
-        CW_USEDEFAULT, 0,
-        CW_USEDEFAULT, 0,
+        windowPosX, windowPosY,
+        windowWidth, windowHeight,
         NULL,
         NULL,
         hInstance,
